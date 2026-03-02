@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anuncio El Patio - Administrable</title>
+    <title>Anuncio El Patio - Nube</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
@@ -27,36 +27,55 @@
         }
         .animate-float-wa { animation: float-wa 3s ease-in-out infinite; }
         
-        /* Ocultar barra de scroll en modal pero permitir scroll */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Pantalla de carga mientras se conecta a la base de datos */
+        #loading-screen {
+            position: fixed; inset: 0; background-color: #0c0a09; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease;
+        }
     </style>
 </head>
-<body class="min-h-screen bg-stone-950 flex flex-col items-center p-4 sm:p-8 font-sans pb-24">
+<body class="min-h-screen bg-stone-950 flex flex-col items-center p-4 sm:p-8 font-sans pb-24 relative">
 
-    <!-- CONTENEDOR PRINCIPAL DEL MENÚ (Se inyecta dinámicamente) -->
-    <div id="app-container" class="w-full max-w-6xl bg-stone-900 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden relative border border-stone-800 mx-auto flex flex-col">
-        <!-- El contenido se renderiza aquí vía JavaScript -->
+    <!-- PANTALLA DE CARGA -->
+    <div id="loading-screen">
+        <svg class="animate-spin -ml-1 mr-3 h-12 w-12 text-orange-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <p class="text-white font-bold tracking-widest uppercase">Cargando Menú...</p>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL DEL MENÚ -->
+    <div id="app-container" class="w-full max-w-6xl bg-stone-900 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden relative border border-stone-800 mx-auto flex flex-col opacity-0 transition-opacity duration-1000">
+        <!-- Renderizado dinámico -->
     </div>
 
     <!-- BOTÓN FLOTANTE WHATSAPP GLOBAL -->
-    <button onclick="enviarPedidoGeneral()" class="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 bg-[#25D366] hover:bg-green-600 text-white p-4 rounded-full shadow-[0_4px_20px_0_rgba(37,211,102,0.6)] transform transition-all hover:scale-110 z-40 animate-float-wa flex items-center justify-center group">
+    <button onclick="enviarPedidoGeneral()" class="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 bg-[#25D366] hover:bg-green-600 text-white p-4 rounded-full shadow-[0_4px_20px_0_rgba(37,211,102,0.6)] transform transition-all hover:scale-110 z-40 animate-float-wa flex items-center justify-center group hidden" id="fab-wa">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
         </svg>
     </button>
 
-    <!-- BOTÓN DE ACCESO ADMINISTRADOR (Oculto/Sutil en esquina inferior izquierda) -->
+    <!-- BOTÓN DE ACCESO ADMINISTRADOR -->
     <button onclick="verificarAdmin()" class="fixed bottom-6 left-6 text-stone-600 hover:text-white opacity-30 hover:opacity-100 transition-all z-40 p-2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
     </button>
 
     <!-- MODAL DE ADMINISTRACIÓN -->
     <div id="admin-modal" class="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-stone-900 border border-stone-700 w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+        <div class="bg-stone-900 border border-stone-700 w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden relative">
             
+            <!-- Bloqueo de UI mientras guarda -->
+            <div id="saving-overlay" class="hidden absolute inset-0 bg-stone-950/80 z-50 flex flex-col items-center justify-center backdrop-blur-sm">
+                <svg class="animate-spin -ml-1 mr-3 h-10 w-10 text-orange-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                <p class="text-white font-bold">Guardando en la Nube...</p>
+            </div>
+
             <div class="p-6 border-b border-stone-800 flex justify-between items-center bg-stone-950">
                 <h2 class="text-white font-black text-2xl flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-orange-500"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 22v-2"/><path d="m17 20.66-1-1.73"/><path d="M11 10.27 7 3.34"/><path d="m20.66 17-1.73-1"/><path d="m3.34 7 1.73 1"/><path d="M14 12h8"/><path d="M2 12h2"/><path d="m20.66 7-1.73 1"/><path d="m3.34 17 1.73-1"/><path d="m17 3.34-1 1.73"/><path d="m11 13.73-4 6.93"/></svg>
@@ -70,23 +89,27 @@
             <div class="p-6 overflow-y-auto no-scrollbar flex-grow space-y-8" id="admin-form-container">
                 <!-- Configuración General -->
                 <div class="bg-stone-950 p-5 rounded-xl border border-stone-800">
-                    <h3 class="text-orange-500 font-bold mb-4 uppercase tracking-widest text-sm">Configuración General</h3>
+                    <h3 class="text-orange-500 font-bold mb-4 uppercase tracking-widest text-sm">Configuración General y Seguridad</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-stone-400 text-xs font-bold mb-1">Teléfono 1 (Con código de país)</label>
-                            <input type="text" id="edit-phone-1" class="w-full bg-stone-800 text-white border border-stone-700 rounded-lg p-3 focus:outline-none focus:border-orange-500">
+                            <input type="text" id="edit-phone-1" oninput="actualizarTempGeneral('phones', 0, this.value)" class="w-full bg-stone-800 text-white border border-stone-700 rounded-lg p-3 focus:outline-none focus:border-orange-500">
                         </div>
                         <div>
-                            <label class="block text-stone-400 text-xs font-bold mb-1">Teléfono 2 (Con código de país)</label>
-                            <input type="text" id="edit-phone-2" class="w-full bg-stone-800 text-white border border-stone-700 rounded-lg p-3 focus:outline-none focus:border-orange-500">
+                            <label class="block text-stone-400 text-xs font-bold mb-1">Teléfono 2 (Opcional)</label>
+                            <input type="text" id="edit-phone-2" oninput="actualizarTempGeneral('phones', 1, this.value)" class="w-full bg-stone-800 text-white border border-stone-700 rounded-lg p-3 focus:outline-none focus:border-orange-500">
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-stone-400 text-xs font-bold mb-1">Dirección del Local</label>
-                            <input type="text" id="edit-address" class="w-full bg-stone-800 text-white border border-stone-700 rounded-lg p-3 focus:outline-none focus:border-orange-500">
+                            <input type="text" id="edit-address" oninput="actualizarTempGeneral('address', null, this.value)" class="w-full bg-stone-800 text-white border border-stone-700 rounded-lg p-3 focus:outline-none focus:border-orange-500">
                         </div>
-                        <div class="md:col-span-2">
+                        <div>
                             <label class="block text-stone-400 text-xs font-bold mb-1">Mensaje Base WhatsApp</label>
-                            <input type="text" id="edit-wa-msg" class="w-full bg-stone-800 text-white border border-stone-700 rounded-lg p-3 focus:outline-none focus:border-orange-500">
+                            <input type="text" id="edit-wa-msg" oninput="actualizarTempGeneral('waMessage', null, this.value)" class="w-full bg-stone-800 text-white border border-stone-700 rounded-lg p-3 focus:outline-none focus:border-orange-500">
+                        </div>
+                        <div>
+                            <label class="block text-red-400 text-xs font-bold mb-1 flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> PIN de Acceso al Panel</label>
+                            <input type="text" id="edit-admin-pin" oninput="actualizarTempGeneral('adminPin', null, this.value)" class="w-full bg-red-950/30 text-red-200 border border-red-900/50 rounded-lg p-3 focus:outline-none focus:border-red-500">
                         </div>
                     </div>
                 </div>
@@ -107,78 +130,122 @@
                 </div>
             </div>
 
-            <div class="p-6 border-t border-stone-800 bg-stone-950 flex justify-end gap-4">
-                <button onclick="cerrarAdmin()" class="px-6 py-3 rounded-xl text-white font-bold hover:bg-stone-800 transition-colors">Cancelar</button>
-                <button onclick="guardarCambios()" class="px-6 py-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-black shadow-lg transition-colors flex items-center gap-2">
+            <!-- FOOTER DEL MODAL (Con botón GUARDAR CAMBIOS) -->
+            <div class="p-6 border-t border-stone-800 bg-stone-950 flex flex-col sm:flex-row justify-end items-center gap-4">
+                <button onclick="cerrarAdmin()" class="w-full sm:w-auto px-6 py-3 rounded-xl text-stone-300 font-bold hover:bg-stone-800 transition-colors border border-transparent hover:border-stone-700">Cancelar</button>
+                <button onclick="guardarCambiosEnNube()" class="w-full sm:w-auto px-8 py-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-black shadow-[0_4px_15px_rgba(234,88,12,0.4)] transition-all flex items-center justify-center gap-2 transform hover:scale-105">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                    Guardar Cambios
+                    GUARDAR CAMBIOS
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL DE LÓGICA Y RENDERIZADO -->
-    <script>
-        // DATOS POR DEFECTO (Si no hay nada guardado)
+    <!-- SCRIPT DE FIREBASE Y LÓGICA -->
+    <script type="module">
+        // Importar Firebase 
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Configuración inyectada de la plataforma
+        const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : "{}";
+        const firebaseConfig = JSON.parse(firebaseConfigStr);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'el-patio-app';
+
+        // DATOS POR DEFECTO PARA NUEVOS USUARIOS
         const defaultData = {
+            adminPin: "1234",
             phones: ['50588946272', '50585666459'],
             address: 'Ubicados frente alcohólicos anónimos cofradía',
             waMessage: '¡Hola El Patio! Me gustaría hacer un pedido para delivery. 🛵🍗',
             products: [
-                {
-                    id: 1,
-                    name: "COMBO PERSONAL",
-                    desc: "6 piezas de pollo, 3 salsas, más una orden de papas.",
-                    price: "200",
-                    img: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?q=80&w=800&auto=format&fit=crop",
-                    popular: false
-                },
-                {
-                    id: 2,
-                    name: "COMBO PARA DOS",
-                    desc: "10 piezas de pollo, 4 salsas, más una orden de papas.",
-                    price: "300",
-                    img: "https://images.unsplash.com/photo-1562967914-608f82629710?q=80&w=800&auto=format&fit=crop",
-                    popular: true
-                },
-                {
-                    id: 3,
-                    name: "COMBO FAMILIAR",
-                    desc: "24 piezas de pollo, mas 8 salsas y 4 órdenes de papas.",
-                    price: "720",
-                    img: "https://www.clarin.com/img/2025/03/24/Ajub_a4rW_1256x620__2.jpg#1742839157762",
-                    popular: false
-                },
-                {
-                    id: 4,
-                    name: "PAPAS EXTRAS",
-                    desc: "La porción perfecta para acompañar tu pollo.",
-                    price: "50",
-                    img: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?q=80&w=800&auto=format&fit=crop",
-                    popular: false
-                }
+                { id: 1, name: "COMBO PERSONAL", desc: "6 piezas de pollo, 3 salsas, más una orden de papas.", price: "200", img: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?q=80&w=800&auto=format&fit=crop", popular: false },
+                { id: 2, name: "COMBO PARA DOS", desc: "10 piezas de pollo, 4 salsas, más una orden de papas.", price: "300", img: "https://images.unsplash.com/photo-1562967914-608f82629710?q=80&w=800&auto=format&fit=crop", popular: true },
+                { id: 3, name: "COMBO FAMILIAR", desc: "24 piezas de pollo, mas 8 salsas y 4 órdenes de papas.", price: "720", img: "https://www.clarin.com/img/2025/03/24/Ajub_a4rW_1256x620__2.jpg#1742839157762", popular: false },
+                { id: 4, name: "PAPAS EXTRAS", desc: "La porción perfecta para acompañar tu pollo.", price: "50", img: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?q=80&w=800&auto=format&fit=crop", popular: false }
             ]
         };
 
-        // Estado actual de la App (Carga desde LocalStorage o usa Default)
-        let appData = JSON.parse(localStorage.getItem('elPatioData')) || defaultData;
-        let adminTempProducts = []; // Para manejar la edición temporal en el modal
+        // Estado Global
+        window.appData = defaultData;     // Lo que se muestra al cliente
+        window.adminTempData = null;      // Lo que se edita en el modal antes de guardar
+        let dbRef = null;
 
-        // --- RENDERIZADO DEL MENÚ PÚBLICO ---
-        function renderizarMenu() {
+        // Iniciar Firebase si la config está disponible
+        if (Object.keys(firebaseConfig).length > 0) {
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+
+            const initAuth = async () => {
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                } catch (e) {
+                    console.error("Error Auth:", e);
+                    quitarPantallaCarga(); // Mostrar default si falla
+                }
+            };
+
+            onAuthStateChanged(auth, (user) => {
+                if (!user) return;
+
+                // Regla Firebase: Referencia al documento público
+                dbRef = doc(db, 'artifacts', appId, 'public', 'data', 'menuData', 'config');
+
+                // Escucha en tiempo real de la base de datos
+                onSnapshot(dbRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        window.appData = snapshot.data();
+                    } else {
+                        // Si el documento no existe (primera vez), se crea en la base de datos
+                        window.appData = defaultData;
+                        setDoc(dbRef, defaultData).catch(e=>console.log(e));
+                    }
+                    renderizarMenu();
+                    quitarPantallaCarga();
+                }, (error) => {
+                    console.error("Error leyendo nube:", error);
+                    quitarPantallaCarga();
+                });
+            });
+
+            initAuth();
+        } else {
+            // Fallback si corre fuera del entorno (Local)
+            console.warn("Sin Firebase. Usando datos por defecto.");
+            quitarPantallaCarga();
+            renderizarMenu();
+        }
+
+        // --- FUNCIONES UI (Globales) ---
+        function quitarPantallaCarga() {
+            const ls = document.getElementById('loading-screen');
+            if(ls) {
+                ls.style.opacity = '0';
+                setTimeout(() => ls.style.display = 'none', 500);
+            }
+            document.getElementById('app-container').classList.remove('opacity-0');
+            document.getElementById('fab-wa').classList.remove('hidden');
+        }
+
+        window.renderizarMenu = function() {
             const container = document.getElementById('app-container');
+            if(!container) return;
             
-            // Generar HTML de Productos
-            let productosHTML = appData.products.map(p => `
+            let productosHTML = window.appData.products.map(p => `
                 <div class="flex flex-col xl:flex-row bg-stone-800 rounded-3xl overflow-hidden shadow-2xl border ${p.popular ? 'border-2 border-orange-500 ring-4 ring-orange-500/20' : 'border border-stone-700'} transition-all duration-300 hover:-translate-y-2 relative">
                     ${p.popular ? `
                     <div class="absolute top-4 left-4 xl:top-4 xl:left-4 bg-yellow-400 text-black text-xs font-black px-3 py-1.5 rounded-full flex items-center gap-1 shadow-lg z-20 animate-pulse">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                        ¡MÁS PEDIDO!
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> ¡MÁS PEDIDO!
                     </div>` : ''}
                     
                     <div class="w-full xl:w-2/5 h-56 xl:h-auto relative overflow-hidden group">
-                        <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"/>
+                        <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110" onerror="this.src='https://placehold.co/800x600/292524/ea580c?text=Imagen'"/>
                         <div class="absolute inset-0 bg-gradient-to-t xl:bg-gradient-to-r from-stone-800 via-transparent to-transparent"></div>
                     </div>
                     
@@ -191,9 +258,7 @@
                         <button onclick="enviarPedidoProducto('${p.name}', '${p.price}')" class="group relative w-full bg-orange-600 hover:bg-[#25D366] text-white font-black text-xl sm:text-2xl py-3 px-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 flex items-center justify-center gap-3 overflow-hidden mt-auto">
                             <span class="relative z-10 flex items-center gap-2">
                                 <span>C$ ${p.price}</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="w-0 opacity-0 group-hover:w-6 group-hover:opacity-100 transition-all duration-300">
-                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
-                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="w-0 opacity-0 group-hover:w-6 group-hover:opacity-100 transition-all duration-300"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
                             </span>
                             <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                         </button>
@@ -201,16 +266,13 @@
                 </div>
             `).join('');
 
-            // Construir Estructura Principal HTML
             container.innerHTML = `
-                <!-- Logo -->
                 <div class="absolute top-0 left-0 bg-white z-20 rounded-br-[2rem] shadow-xl p-4 sm:p-6 border-b-4 border-r-4 border-orange-500 flex flex-col items-center justify-center transform transition-transform hover:scale-105">
                     <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black mb-1"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>
                     <h1 class="text-black font-black text-xl sm:text-2xl tracking-tighter leading-none text-center">EL PATIO</h1>
                     <p class="text-orange-600 font-bold text-xs sm:text-sm italic transform -rotate-2 mt-1">De la abuela</p>
                 </div>
 
-                <!-- Banner Header -->
                 <div class="relative pt-28 pb-12 px-6 sm:px-12 bg-gradient-to-b from-stone-800 to-stone-900 overflow-hidden text-center sm:text-right">
                     <div class="absolute top-[-50%] right-[-5%] opacity-10 pointer-events-none text-white">
                         <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
@@ -221,12 +283,10 @@
                     </h2>
                 </div>
 
-                <!-- Grid Productos -->
                 <div class="px-6 sm:px-10 py-8 grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10 flex-grow">
                     ${productosHTML}
                 </div>
 
-                <!-- Footer (Motos y Teléfonos) -->
                 <div class="mt-auto">
                     <div class="bg-orange-600 px-6 sm:px-12 py-8 sm:py-10 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
                         <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, black 1px, transparent 0); background-size: 20px 20px;"></div>
@@ -249,57 +309,50 @@
                                 <span class="text-white font-bold tracking-widest text-xs uppercase">Líneas de Atención</span>
                             </div>
                             <div class="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-3 w-full">
+                                ${window.appData.phones[0] ? `
                                 <button onclick="enviarPedidoGeneral()" class="text-white font-black text-xl sm:text-2xl hover:text-green-400 transition-colors w-full px-6 bg-white/10 py-2 rounded-xl border border-white/5 whitespace-nowrap">
-                                    ${formatearTelefono(appData.phones[0])}
-                                </button>
-                                ${appData.phones[1] ? `
+                                    ${formatearTelefono(window.appData.phones[0])}
+                                </button>` : ''}
+                                ${window.appData.phones[1] ? `
                                 <button onclick="enviarPedidoGeneral()" class="text-white font-black text-xl sm:text-2xl hover:text-green-400 transition-colors w-full px-6 bg-white/10 py-2 rounded-xl border border-white/5 whitespace-nowrap">
-                                    ${formatearTelefono(appData.phones[1])}
-                                </button>
-                                ` : ''}
+                                    ${formatearTelefono(window.appData.phones[1])}
+                                </button>` : ''}
                             </div>
                         </div>
                     </div>
 
-                    <!-- Dirección -->
                     <div class="bg-yellow-400 p-6 flex flex-row items-center justify-center gap-4 text-black text-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-bounce text-orange-600 shrink-0"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                        <p class="font-extrabold text-lg sm:text-xl uppercase tracking-tight">${appData.address}</p>
+                        <p class="font-extrabold text-lg sm:text-xl uppercase tracking-tight">${window.appData.address}</p>
                     </div>
                 </div>
             `;
-        }
+        };
 
-        // --- LÓGICA DE WHATSAPP ---
         function formatearTelefono(tel) {
-            // Intenta separar si tiene código de país, formato estético
-            let t = tel.toString();
+            let t = tel.toString().trim();
+            if(!t) return "";
             if(t.startsWith('505')) t = t.substring(3);
             if(t.length === 8) return `${t.substring(0,4)} ${t.substring(4)}`;
-            return tel; // fallback
+            return tel;
         }
 
-        function abrirWhatsApp(mensaje) {
-            const numeros = appData.phones.filter(n => n.trim() !== "");
-            if(numeros.length === 0) { alert("No hay números configurados."); return; }
-            const numeroSeleccionado = numeros[Math.floor(Math.random() * numeros.length)];
-            const urlWhatsApp = `https://wa.me/${numeroSeleccionado}?text=${encodeURIComponent(mensaje)}`;
-            window.open(urlWhatsApp, '_blank');
+        window.abrirWhatsApp = function(mensaje) {
+            const numeros = window.appData.phones.filter(n => n && n.trim() !== "");
+            if(numeros.length === 0) return alert("El negocio no ha configurado números.");
+            const num = numeros[Math.floor(Math.random() * numeros.length)];
+            window.open(`https://wa.me/${num}?text=${encodeURIComponent(mensaje)}`, '_blank');
         }
 
-        function enviarPedidoGeneral() {
-            abrirWhatsApp(appData.waMessage);
+        window.enviarPedidoGeneral = function() { window.abrirWhatsApp(window.appData.waMessage); }
+        window.enviarPedidoProducto = function(nombre, precio) {
+            window.abrirWhatsApp(`¡Hola El Patio! Me interesa pedir el *${nombre}* por C$ ${precio}. ¿Me pueden tomar el pedido? 🛵🍗`);
         }
 
-        function enviarPedidoProducto(nombreProducto, precio) {
-            abrirWhatsApp(`¡Hola El Patio! Me interesa pedir el *${nombreProducto}* por C$ ${precio}. ¿Me pueden tomar el pedido? 🛵🍗`);
-        }
-
-
-        // --- LÓGICA DE ADMINISTRACIÓN ---
-        function verificarAdmin() {
+        // --- ADMINISTRACIÓN ---
+        window.verificarAdmin = function() {
             const password = prompt("🔐 Acceso Restringido. Ingrese el PIN de administrador:");
-            if (password === "1234") { // Contraseña por defecto
+            if (password === window.appData.adminPin) {
                 abrirPanelAdmin();
             } else if (password !== null) {
                 alert("PIN incorrecto.");
@@ -307,61 +360,75 @@
         }
 
         function abrirPanelAdmin() {
-            // Copia profunda para no afectar los datos hasta que se le de a "Guardar"
-            adminTempProducts = JSON.parse(JSON.stringify(appData.products));
+            // Clonar estado actual a temporal para editar sin afectar la vista pública hasta que guarden
+            window.adminTempData = JSON.parse(JSON.stringify(window.appData));
             
-            // Llenar campos generales
-            document.getElementById('edit-phone-1').value = appData.phones[0] || "";
-            document.getElementById('edit-phone-2').value = appData.phones[1] || "";
-            document.getElementById('edit-address').value = appData.address || "";
-            document.getElementById('edit-wa-msg').value = appData.waMessage || "";
+            document.getElementById('edit-phone-1').value = window.adminTempData.phones[0] || "";
+            document.getElementById('edit-phone-2').value = window.adminTempData.phones[1] || "";
+            document.getElementById('edit-address').value = window.adminTempData.address || "";
+            document.getElementById('edit-wa-msg').value = window.adminTempData.waMessage || "";
+            document.getElementById('edit-admin-pin').value = window.adminTempData.adminPin || "1234";
             
             renderizarListaAdmin();
-            
             document.getElementById('admin-modal').classList.remove('hidden');
         }
 
-        function cerrarAdmin() {
+        window.cerrarAdmin = function() {
             document.getElementById('admin-modal').classList.add('hidden');
+            window.adminTempData = null; // Limpiar memoria temp
         }
 
-        // Renderiza las tarjetas de productos dentro del Modal
+        window.actualizarTempGeneral = function(campo, indiceArray, valor) {
+            if(indiceArray !== null) {
+                window.adminTempData[campo][indiceArray] = valor;
+            } else {
+                window.adminTempData[campo] = valor;
+            }
+        }
+
+        window.actualizarTempProducto = function(index, prop, value) {
+            window.adminTempData.products[index][prop] = value;
+            if(prop === 'img') {
+                const imgEl = document.getElementById(`thumb-${index}`);
+                if(imgEl) imgEl.src = value || 'https://placehold.co/400x300/292524/ea580c?text=Imagen';
+            }
+        }
+
         function renderizarListaAdmin() {
             const list = document.getElementById('admin-products-list');
-            list.innerHTML = adminTempProducts.map((p, index) => `
+            list.innerHTML = window.adminTempData.products.map((p, index) => `
                 <div class="bg-stone-800 p-4 rounded-xl border border-stone-700 relative">
                     <div class="absolute top-2 right-2">
                         <button onclick="eliminarProductoAdmin(${index})" class="text-red-500 hover:bg-red-500/20 p-2 rounded-lg transition-colors" title="Eliminar Producto">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                         </button>
                     </div>
-                    
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
                         <div class="md:col-span-3">
                             <label class="block text-stone-400 text-xs font-bold mb-1">Imagen (URL http...)</label>
-                            <input type="text" onchange="actualizarTempProp(${index}, 'img', this.value)" value="${p.img}" class="w-full bg-stone-900 text-white text-sm border border-stone-700 rounded-lg p-2 focus:outline-none focus:border-orange-500">
-                            <img src="${p.img}" class="mt-2 w-full h-24 object-cover rounded-lg border border-stone-700 bg-stone-950" onerror="this.src='https://placehold.co/400x300/292524/ea580c?text=Img+Error'">
+                            <input type="text" oninput="actualizarTempProducto(${index}, 'img', this.value)" value="${p.img}" class="w-full bg-stone-900 text-white text-sm border border-stone-700 rounded-lg p-2 focus:outline-none focus:border-orange-500">
+                            <img id="thumb-${index}" src="${p.img}" class="mt-2 w-full h-24 object-cover rounded-lg border border-stone-700 bg-stone-950" onerror="this.src='https://placehold.co/400x300/292524/ea580c?text=Img+Error'">
                         </div>
                         <div class="md:col-span-9 space-y-3">
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
                                 <div class="md:col-span-3">
                                     <label class="block text-stone-400 text-xs font-bold mb-1">Nombre del Producto</label>
-                                    <input type="text" onchange="actualizarTempProp(${index}, 'name', this.value)" value="${p.name}" class="w-full bg-stone-900 text-white border border-stone-700 rounded-lg p-2 focus:outline-none focus:border-orange-500">
+                                    <input type="text" oninput="actualizarTempProducto(${index}, 'name', this.value)" value="${p.name}" class="w-full bg-stone-900 text-white border border-stone-700 rounded-lg p-2 focus:outline-none focus:border-orange-500">
                                 </div>
                                 <div class="md:col-span-1">
                                     <label class="block text-stone-400 text-xs font-bold mb-1">Precio (C$)</label>
-                                    <input type="text" onchange="actualizarTempProp(${index}, 'price', this.value)" value="${p.price}" class="w-full bg-stone-900 text-white border border-stone-700 rounded-lg p-2 focus:outline-none focus:border-orange-500">
+                                    <input type="text" oninput="actualizarTempProducto(${index}, 'price', this.value)" value="${p.price}" class="w-full bg-stone-900 text-white border border-stone-700 rounded-lg p-2 focus:outline-none focus:border-orange-500">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-stone-400 text-xs font-bold mb-1">Descripción</label>
-                                <textarea onchange="actualizarTempProp(${index}, 'desc', this.value)" class="w-full bg-stone-900 text-white text-sm border border-stone-700 rounded-lg p-2 h-16 resize-none focus:outline-none focus:border-orange-500">${p.desc}</textarea>
+                                <textarea oninput="actualizarTempProducto(${index}, 'desc', this.value)" class="w-full bg-stone-900 text-white text-sm border border-stone-700 rounded-lg p-2 h-16 resize-none focus:outline-none focus:border-orange-500">${p.desc}</textarea>
                             </div>
                             <div class="flex items-center gap-2">
-                                <input type="checkbox" id="pop-${index}" onchange="actualizarTempProp(${index}, 'popular', this.checked)" ${p.popular ? 'checked' : ''} class="w-4 h-4 text-orange-500 bg-stone-900 border-stone-700 rounded focus:ring-orange-500 focus:ring-2 accent-orange-500">
+                                <input type="checkbox" id="pop-${index}" onchange="actualizarTempProducto(${index}, 'popular', this.checked)" ${p.popular ? 'checked' : ''} class="w-4 h-4 text-orange-500 bg-stone-900 border-stone-700 rounded focus:ring-orange-500 focus:ring-2 accent-orange-500">
                                 <label for="pop-${index}" class="text-stone-300 text-sm font-bold flex items-center gap-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-yellow-400"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    Marcar como "MÁS PEDIDO"
+                                    MÁS PEDIDO
                                 </label>
                             </div>
                         </div>
@@ -370,65 +437,45 @@
             `).join('');
         }
 
-        function actualizarTempProp(index, prop, value) {
-            adminTempProducts[index][prop] = value;
-            if(prop === 'img') renderizarListaAdmin(); // Re-renderizar para actualizar la miniatura
-        }
-
-        function agregarProductoVacio() {
-            adminTempProducts.push({
-                id: Date.now(), // ID único
-                name: "NUEVO PRODUCTO",
-                desc: "Descripción del producto aquí...",
-                price: "0",
-                img: "https://placehold.co/800x600/292524/ea580c?text=Foto+Aqui",
-                popular: false
+        window.agregarProductoVacio = function() {
+            window.adminTempData.products.push({
+                id: Date.now(), name: "NUEVO PRODUCTO", desc: "Descripción...", price: "0", img: "https://placehold.co/800x600/292524/ea580c?text=Foto", popular: false
             });
             renderizarListaAdmin();
-            // Scroll hacia el final
             setTimeout(() => {
-                const container = document.getElementById('admin-form-container');
-                container.scrollTop = container.scrollHeight;
+                const c = document.getElementById('admin-form-container');
+                c.scrollTop = c.scrollHeight;
             }, 50);
         }
 
-        function eliminarProductoAdmin(index) {
+        window.eliminarProductoAdmin = function(index) {
             if(confirm("¿Seguro que deseas eliminar este producto?")) {
-                adminTempProducts.splice(index, 1);
+                window.adminTempData.products.splice(index, 1);
                 renderizarListaAdmin();
             }
         }
 
-        // GUARDAR CAMBIOS FINALES
-        function guardarCambios() {
-            // Actualizar datos generales
-            appData.phones = [
-                document.getElementById('edit-phone-1').value.trim(),
-                document.getElementById('edit-phone-2').value.trim()
-            ];
-            appData.address = document.getElementById('edit-address').value;
-            appData.waMessage = document.getElementById('edit-wa-msg').value;
-            
-            // Actualizar productos
-            appData.products = adminTempProducts;
+        // --- SUBIR DATOS A LA NUBE ---
+        window.guardarCambiosEnNube = async function() {
+            if(!dbRef) {
+                alert("Error de conexión. No estás conectado a la nube.");
+                return;
+            }
 
-            // Guardar en el navegador
-            localStorage.setItem('elPatioData', JSON.stringify(appData));
-            
-            // Aplicar cambios a la vista
-            renderizarMenu();
-            cerrarAdmin();
-            
-            // Opcional: Feedback visual de guardado (podría ser un toast, pero usaremos alert para simplificar)
-            // alert("¡Cambios guardados con éxito!");
+            // Mostrar "Guardando..."
+            document.getElementById('saving-overlay').classList.remove('hidden');
+
+            try {
+                await setDoc(dbRef, window.adminTempData);
+                // Si es exitoso, Firebase enviará el onSnapshot y se actualizará la pantalla sola
+                cerrarAdmin();
+            } catch (error) {
+                console.error("Error al guardar:", error);
+                alert("Hubo un error guardando en la Nube. Revisa tu conexión.");
+            } finally {
+                document.getElementById('saving-overlay').classList.add('hidden');
+            }
         }
-
-        // --- INICIALIZACIÓN ---
-        // Renderizar la primera vez que carga la página
-        window.onload = () => {
-            renderizarMenu();
-        };
-
     </script>
 </body>
 </html>
