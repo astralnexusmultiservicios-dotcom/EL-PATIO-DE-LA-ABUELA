@@ -7,7 +7,7 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Estilos para animación de velocidad horizontal -->
+    <!-- Estilos para animaciones personalizadas -->
     <style>
         @keyframes horizontal-drive {
             0%, 100% { transform: translateX(-2px) skewX(0deg); }
@@ -25,32 +25,41 @@
         .animate-speed-line-1 { animation: speed-line 0.35s linear infinite; }
         .animate-speed-line-2 { animation: speed-line 0.45s linear infinite 0.1s; }
         .animate-speed-line-3 { animation: speed-line 0.3s linear infinite 0.2s; }
+        
+        /* Animación para el botón flotante de WA */
+        @keyframes float-wa {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float-wa {
+            animation: float-wa 3s ease-in-out infinite;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-stone-950 flex items-center justify-center p-4 sm:p-8 font-sans">
 
-    <!-- Contenedor Principal (La Tarjeta/Anuncio) -->
-    <div class="w-full max-w-5xl bg-stone-900 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden relative border border-stone-800">
+    <!-- Contenedor Principal (Sentido Horizontal - max-w-6xl para aprovechar el ancho) -->
+    <div class="w-full max-w-6xl bg-stone-900 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden relative border border-stone-800 mx-auto flex flex-col">
         
         <!-- Esquina superior izquierda - LOGO ESTILO SELLO -->
         <div class="absolute top-0 left-0 bg-white z-20 rounded-br-[2rem] shadow-xl p-4 sm:p-6 border-b-4 border-r-4 border-orange-500 flex flex-col items-center justify-center transform transition-transform hover:scale-105">
             <!-- ChefHat Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black mb-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black mb-1">
                 <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/>
                 <line x1="6" y1="17" x2="18" y2="17"/>
             </svg>
             <h1 class="text-black font-black text-xl sm:text-2xl tracking-tighter leading-none text-center">
                 EL PATIO
             </h1>
-            <p class="text-orange-600 font-bold text-sm italic transform -rotate-2 mt-1">
+            <p class="text-orange-600 font-bold text-xs sm:text-sm italic transform -rotate-2 mt-1">
                 De la abuela
             </p>
         </div>
 
-        <!-- Header / Banner de Título -->
-        <div class="relative pt-24 pb-12 px-6 sm:px-12 bg-gradient-to-b from-stone-800 to-stone-900 overflow-hidden text-center sm:text-right">
-            <!-- Decoración de fondo (Utensils Icon) -->
-            <div class="absolute top-[-50%] right-[-10%] opacity-10 pointer-events-none text-white">
+        <!-- Header / Banner de Título (Alineado a la derecha en pantallas grandes) -->
+        <div class="relative pt-28 pb-12 px-6 sm:px-12 bg-gradient-to-b from-stone-800 to-stone-900 overflow-hidden text-center sm:text-right">
+            <!-- Decoración de fondo -->
+            <div class="absolute top-[-50%] right-[-5%] opacity-10 pointer-events-none text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
                     <path d="M7 2v20"/>
@@ -58,112 +67,133 @@
                 </svg>
             </div>
             
-            <h2 class="text-orange-500 font-black text-4xl sm:text-6xl tracking-widest uppercase drop-shadow-lg inline-block relative z-10 mt-8 sm:mt-0">
+            <h2 class="text-orange-500 font-black text-4xl sm:text-6xl tracking-widest uppercase drop-shadow-lg inline-block relative z-10 mt-4 sm:mt-0">
                 Nuestros Combos
                 <div class="h-2 bg-orange-500 w-1/2 mx-auto sm:ml-auto sm:mr-0 mt-2 rounded-full"></div>
             </h2>
         </div>
 
-        <!-- Sección de Productos (Grid) -->
-        <div class="px-6 sm:px-12 py-8 grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+        <!-- Sección de Productos (FORMATO HORIZONTAL - GRID DE 2 COLUMNAS) -->
+        <div class="px-6 sm:px-10 py-8 grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10 flex-grow">
             
             <!-- Producto 1: COMBO PERSONAL -->
-            <div class="flex flex-col sm:flex-row bg-stone-800 rounded-2xl overflow-hidden shadow-lg border transition-all duration-300 hover:-translate-y-2 hover:shadow-orange-500/20 border-stone-700 hover:border-orange-500/50">
-                <div class="w-full sm:w-2/5 h-48 sm:h-auto relative overflow-hidden group">
+            <div class="flex flex-col xl:flex-row bg-stone-800 rounded-3xl overflow-hidden shadow-2xl border border-stone-700 transition-all duration-300 hover:-translate-y-2 hover:border-orange-500/50">
+                <div class="w-full xl:w-2/5 h-56 xl:h-auto relative overflow-hidden group">
                     <img src="https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?q=80&w=800&auto=format&fit=crop" alt="COMBO PERSONAL" class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"/>
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent sm:hidden"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t xl:bg-gradient-to-r from-stone-800 via-transparent to-transparent"></div>
                 </div>
-                <div class="w-full sm:w-3/5 p-5 flex flex-col justify-between relative bg-stone-800">
+                <div class="w-full xl:w-3/5 p-6 sm:p-8 flex flex-col justify-between items-center xl:items-start text-center xl:text-left relative z-10 bg-stone-800">
                     <div>
-                        <h3 class="text-white font-black text-2xl mb-2">COMBO PERSONAL</h3>
-                        <p class="text-stone-400 text-sm leading-relaxed mb-4">6 piezas de pollo, 3 salsas, más una orden de papas.</p>
+                        <h3 class="text-white font-black text-2xl sm:text-3xl mb-2 drop-shadow-md">COMBO PERSONAL</h3>
+                        <p class="text-stone-300 text-sm sm:text-base leading-relaxed mb-6">6 piezas de pollo, 3 salsas, más una orden de papas.</p>
                     </div>
-                    <div class="flex items-center justify-between mt-auto pt-4 border-t border-stone-700">
-                        <span class="text-stone-500 text-sm font-medium uppercase tracking-wider">Precio</span>
-                        <div class="bg-orange-500 text-white font-black text-2xl px-4 py-1 rounded-lg shadow-md transform -rotate-2">C$ 200</div>
-                    </div>
+                    
+                    <button onclick="enviarPedido('COMBO PERSONAL', '200')" class="group relative w-full bg-orange-600 hover:bg-[#25D366] text-white font-black text-xl sm:text-2xl py-3 px-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 flex items-center justify-center gap-3 overflow-hidden mt-auto">
+                        <span class="relative z-10 flex items-center gap-2">
+                            <span>C$ 200</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="w-0 opacity-0 group-hover:w-6 group-hover:opacity-100 transition-all duration-300">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+                            </svg>
+                        </span>
+                        <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                    </button>
                 </div>
             </div>
 
             <!-- Producto 2: COMBO PARA DOS (Popular) -->
-            <div class="flex flex-col sm:flex-row bg-stone-800 rounded-2xl overflow-hidden shadow-lg border transition-all duration-300 hover:-translate-y-2 hover:shadow-orange-500/20 border-orange-500 ring-2 ring-orange-500/50">
-                <div class="w-full sm:w-2/5 h-48 sm:h-auto relative overflow-hidden group">
-                    <img src="https://images.unsplash.com/photo-1562967914-608f82629710?q=80&w=800&auto=format&fit=crop" alt="COMBO PARA DOS" class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"/>
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent sm:hidden"></div>
-                    <div class="absolute top-2 left-2 bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-md">
-                        <!-- Star Icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                        </svg>
-                        ¡MÁS PEDIDO!
-                    </div>
+            <div class="flex flex-col xl:flex-row bg-stone-800 rounded-3xl overflow-hidden shadow-2xl border-2 border-orange-500 ring-4 ring-orange-500/20 transition-all duration-300 hover:-translate-y-2 relative">
+                <div class="absolute top-4 left-4 xl:top-4 xl:left-4 bg-yellow-400 text-black text-xs font-black px-3 py-1.5 rounded-full flex items-center gap-1 shadow-lg z-20 animate-pulse">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                    ¡MÁS PEDIDO!
                 </div>
-                <div class="w-full sm:w-3/5 p-5 flex flex-col justify-between relative bg-stone-800">
+                <div class="w-full xl:w-2/5 h-56 xl:h-auto relative overflow-hidden group">
+                    <img src="https://images.unsplash.com/photo-1562967914-608f82629710?q=80&w=800&auto=format&fit=crop" alt="COMBO PARA DOS" class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"/>
+                    <div class="absolute inset-0 bg-gradient-to-t xl:bg-gradient-to-r from-stone-800 via-transparent to-transparent"></div>
+                </div>
+                <div class="w-full xl:w-3/5 p-6 sm:p-8 flex flex-col justify-between items-center xl:items-start text-center xl:text-left relative z-10 bg-stone-800">
                     <div>
-                        <h3 class="text-white font-black text-2xl mb-2">COMBO PARA DOS</h3>
-                        <p class="text-stone-400 text-sm leading-relaxed mb-4">10 piezas de pollo, 4 salsas, más una orden de papas.</p>
+                        <h3 class="text-white font-black text-2xl sm:text-3xl mb-2 drop-shadow-md">COMBO PARA DOS</h3>
+                        <p class="text-stone-300 text-sm sm:text-base leading-relaxed mb-6">10 piezas de pollo, 4 salsas, más una orden de papas.</p>
                     </div>
-                    <div class="flex items-center justify-between mt-auto pt-4 border-t border-stone-700">
-                        <span class="text-stone-500 text-sm font-medium uppercase tracking-wider">Precio</span>
-                        <div class="bg-orange-500 text-white font-black text-2xl px-4 py-1 rounded-lg shadow-md transform -rotate-2">C$ 300</div>
-                    </div>
+                    
+                    <button onclick="enviarPedido('COMBO PARA DOS', '300')" class="group relative w-full bg-orange-600 hover:bg-[#25D366] text-white font-black text-xl sm:text-2xl py-3 px-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 flex items-center justify-center gap-3 overflow-hidden mt-auto">
+                        <span class="relative z-10 flex items-center gap-2">
+                            <span>C$ 300</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="w-0 opacity-0 group-hover:w-6 group-hover:opacity-100 transition-all duration-300">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+                            </svg>
+                        </span>
+                        <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                    </button>
                 </div>
             </div>
 
             <!-- Producto 3: COMBO FAMILIAR -->
-            <div class="flex flex-col sm:flex-row bg-stone-800 rounded-2xl overflow-hidden shadow-lg border transition-all duration-300 hover:-translate-y-2 hover:shadow-orange-500/20 border-stone-700 hover:border-orange-500/50">
-                <div class="w-full sm:w-2/5 h-48 sm:h-auto relative overflow-hidden group">
+            <div class="flex flex-col xl:flex-row bg-stone-800 rounded-3xl overflow-hidden shadow-2xl border border-stone-700 transition-all duration-300 hover:-translate-y-2 hover:border-orange-500/50">
+                <div class="w-full xl:w-2/5 h-56 xl:h-auto relative overflow-hidden group">
                     <img src="https://www.clarin.com/img/2025/03/24/Ajub_a4rW_1256x620__2.jpg#1742839157762" alt="COMBO FAMILIAR" class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"/>
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent sm:hidden"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t xl:bg-gradient-to-r from-stone-800 via-transparent to-transparent"></div>
                 </div>
-                <div class="w-full sm:w-3/5 p-5 flex flex-col justify-between relative bg-stone-800">
+                <div class="w-full xl:w-3/5 p-6 sm:p-8 flex flex-col justify-between items-center xl:items-start text-center xl:text-left relative z-10 bg-stone-800">
                     <div>
-                        <h3 class="text-white font-black text-2xl mb-2">COMBO FAMILIAR</h3>
-                        <p class="text-stone-400 text-sm leading-relaxed mb-4">24 piezas de pollo, mas 8 salsas y 4 órdenes de papas.</p>
+                        <h3 class="text-white font-black text-2xl sm:text-3xl mb-2 drop-shadow-md">COMBO FAMILIAR</h3>
+                        <p class="text-stone-300 text-sm sm:text-base leading-relaxed mb-6">24 piezas de pollo, mas 8 salsas y 4 órdenes de papas.</p>
                     </div>
-                    <div class="flex items-center justify-between mt-auto pt-4 border-t border-stone-700">
-                        <span class="text-stone-500 text-sm font-medium uppercase tracking-wider">Precio</span>
-                        <div class="bg-orange-500 text-white font-black text-2xl px-4 py-1 rounded-lg shadow-md transform -rotate-2">C$ 720</div>
-                    </div>
+                    
+                    <button onclick="enviarPedido('COMBO FAMILIAR', '720')" class="group relative w-full bg-orange-600 hover:bg-[#25D366] text-white font-black text-xl sm:text-2xl py-3 px-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 flex items-center justify-center gap-3 overflow-hidden mt-auto">
+                        <span class="relative z-10 flex items-center gap-2">
+                            <span>C$ 720</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="w-0 opacity-0 group-hover:w-6 group-hover:opacity-100 transition-all duration-300">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+                            </svg>
+                        </span>
+                        <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                    </button>
                 </div>
             </div>
 
             <!-- Producto 4: PAPAS EXTRAS -->
-            <div class="flex flex-col sm:flex-row bg-stone-800 rounded-2xl overflow-hidden shadow-lg border transition-all duration-300 hover:-translate-y-2 hover:shadow-orange-500/20 border-stone-700 hover:border-orange-500/50">
-                <div class="w-full sm:w-2/5 h-48 sm:h-auto relative overflow-hidden group">
+            <div class="flex flex-col xl:flex-row bg-stone-800 rounded-3xl overflow-hidden shadow-2xl border border-stone-700 transition-all duration-300 hover:-translate-y-2 hover:border-orange-500/50">
+                <div class="w-full xl:w-2/5 h-56 xl:h-auto relative overflow-hidden group">
                     <img src="https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?q=80&w=800&auto=format&fit=crop" alt="PAPAS EXTRAS" class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"/>
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent sm:hidden"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t xl:bg-gradient-to-r from-stone-800 via-transparent to-transparent"></div>
                 </div>
-                <div class="w-full sm:w-3/5 p-5 flex flex-col justify-between relative bg-stone-800">
+                <div class="w-full xl:w-3/5 p-6 sm:p-8 flex flex-col justify-between items-center xl:items-start text-center xl:text-left relative z-10 bg-stone-800">
                     <div>
-                        <h3 class="text-white font-black text-2xl mb-2">PAPAS EXTRAS</h3>
-                        <p class="text-stone-400 text-sm leading-relaxed mb-4">La porción perfecta para acompañar tu pollo.</p>
+                        <h3 class="text-white font-black text-2xl sm:text-3xl mb-2 drop-shadow-md">PAPAS EXTRAS</h3>
+                        <p class="text-stone-300 text-sm sm:text-base leading-relaxed mb-6">La porción perfecta para acompañar tu pollo.</p>
                     </div>
-                    <div class="flex items-center justify-between mt-auto pt-4 border-t border-stone-700">
-                        <span class="text-stone-500 text-sm font-medium uppercase tracking-wider">Precio</span>
-                        <div class="bg-orange-500 text-white font-black text-2xl px-4 py-1 rounded-lg shadow-md transform -rotate-2">C$ 50</div>
-                    </div>
+                    
+                    <button onclick="enviarPedido('PAPAS EXTRAS', '50')" class="group relative w-full bg-orange-600 hover:bg-[#25D366] text-white font-black text-xl sm:text-2xl py-3 px-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 flex items-center justify-center gap-3 overflow-hidden mt-auto">
+                        <span class="relative z-10 flex items-center gap-2">
+                            <span>C$ 50</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="w-0 opacity-0 group-hover:w-6 group-hover:opacity-100 transition-all duration-300">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+                            </svg>
+                        </span>
+                        <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                    </button>
                 </div>
             </div>
 
         </div>
 
-        <!-- Footer / Delivery Info -->
-        <div class="mt-4">
-            <!-- Banner de Delivery y Teléfonos -->
-            <div class="bg-orange-600 px-6 sm:px-12 py-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
-                <!-- Patrón de fondo sutil -->
+        <!-- Footer / Delivery Info (Distribuido Horizontalmente en pantallas grandes) -->
+        <div class="mt-auto">
+            <div class="bg-orange-600 px-6 sm:px-12 py-8 sm:py-10 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
+                <!-- Patrón de fondo -->
                 <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, black 1px, transparent 0); background-size: 20px 20px;"></div>
                 
-                <div class="flex items-center gap-4 relative z-10">
-                    <div class="bg-white text-orange-600 w-16 h-16 rounded-full shadow-lg relative flex items-center justify-center overflow-hidden">
-                        <!-- Líneas de velocidad animadas (MÁS RÁPIDAS Y GRUESAS) -->
-                        <div class="absolute right-2 top-4 w-6 h-[3px] bg-orange-300 animate-speed-line-1 rounded-full"></div>
-                        <div class="absolute right-1 top-8 w-8 h-[3px] bg-orange-400 animate-speed-line-2 rounded-full"></div>
-                        <div class="absolute right-3 bottom-4 w-5 h-[3px] bg-orange-300 animate-speed-line-3 rounded-full"></div>
+                <!-- Animación Moto + Texto Alineado -->
+                <div class="flex flex-col sm:flex-row items-center gap-6 relative z-10">
+                    <div class="bg-white text-orange-600 w-20 sm:w-24 h-20 sm:h-24 rounded-full shadow-2xl relative flex items-center justify-center overflow-hidden border-4 border-orange-400 shrink-0">
+                        <div class="absolute right-3 top-5 w-8 h-[4px] bg-orange-300 animate-speed-line-1 rounded-full"></div>
+                        <div class="absolute right-2 top-10 w-10 h-[4px] bg-orange-400 animate-speed-line-2 rounded-full"></div>
+                        <div class="absolute right-4 bottom-5 w-6 h-[4px] bg-orange-300 animate-speed-line-3 rounded-full"></div>
                         
-                        <!-- Icono de MOTO animado horizontalmente -->
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-drive relative z-10 text-orange-600 mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-drive relative z-10 text-orange-600 mt-1">
                             <path d="m11.5 12-4-8h-3"/>
                             <path d="M17.5 16h-11"/>
                             <circle cx="18.5" cy="16.5" r="3.5"/>
@@ -172,40 +202,67 @@
                             <path d="m18.5 13-1-4h-4"/>
                         </svg>
                     </div>
-                    <div>
-                        <h4 class="text-white font-black text-xl sm:text-2xl uppercase italic tracking-wide">
-                            ¡Te lo llevamos<br class="hidden sm:block md:hidden" /> hasta tu casa!
-                        </h4>
-                    </div>
+                    <h4 class="text-white font-black text-2xl sm:text-3xl uppercase italic tracking-wide text-center sm:text-left">
+                        ¡Te lo llevamos<br class="hidden xl:block"/> hasta tu casa!
+                    </h4>
                 </div>
 
-                <div class="flex flex-col sm:flex-row gap-4 items-center bg-black/20 p-4 rounded-2xl backdrop-blur-sm relative z-10 border border-white/10">
-                    <!-- Phone Icon -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white animate-pulse">
-                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                    </svg>
-                    <div class="text-center sm:text-left flex flex-col sm:flex-row gap-2 sm:gap-4">
-                        <a href="tel:88946272" class="text-white font-black text-2xl hover:text-yellow-300 transition-colors">88946272</a>
-                        <span class="text-white/50 hidden sm:block text-2xl">/</span>
-                        <a href="tel:85666459" class="text-white font-black text-2xl hover:text-yellow-300 transition-colors">85666459</a>
+                <!-- Teléfonos Alineados a la Derecha -->
+                <div class="flex flex-col gap-3 items-center bg-black/30 w-full md:w-auto p-5 sm:p-6 rounded-3xl backdrop-blur-sm relative z-10 border border-white/10 shrink-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-400 animate-pulse">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                        <span class="text-white font-bold tracking-widest text-xs uppercase">Líneas de Atención</span>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-3 w-full">
+                        <button onclick="enviarPedido()" class="text-white font-black text-xl sm:text-2xl hover:text-green-400 transition-colors w-full px-6 bg-white/10 py-2 rounded-xl border border-white/5 whitespace-nowrap">8894 6272</button>
+                        <button onclick="enviarPedido()" class="text-white font-black text-xl sm:text-2xl hover:text-green-400 transition-colors w-full px-6 bg-white/10 py-2 rounded-xl border border-white/5 whitespace-nowrap">8566 6459</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Banner de Dirección (Amarillo) -->
-            <div class="bg-yellow-400 p-5 flex items-center justify-center gap-3 text-black">
-                <!-- MapPin Icon -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-bounce">
+            <!-- Banner de Dirección -->
+            <div class="bg-yellow-400 p-6 flex flex-row items-center justify-center gap-4 text-black text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-bounce text-orange-600 shrink-0">
                     <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
                     <circle cx="12" cy="10" r="3"/>
                 </svg>
-                <p class="font-extrabold text-lg sm:text-xl uppercase tracking-tight text-center max-w-2xl">
+                <p class="font-extrabold text-lg sm:text-xl uppercase tracking-tight">
                     Ubicados frente alcohólicos anónimos cofradía
                 </p>
             </div>
         </div>
-
     </div>
 
+    <!-- BOTÓN FLOTANTE WHATSAPP GLOBAL -->
+    <button onclick="enviarPedido()" class="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 bg-[#25D366] hover:bg-green-600 text-white p-4 rounded-full shadow-[0_4px_20px_0_rgba(37,211,102,0.6)] transform transition-all hover:scale-110 z-50 animate-float-wa flex items-center justify-center group">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+        </svg>
+        <span class="absolute right-full mr-4 bg-stone-800 text-white text-sm font-bold px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+            ¡Haz tu pedido!
+        </span>
+    </button>
+
+    <!-- SCRIPT PARA LÓGICA DE WHATSAPP ROTATIVO -->
+    <script>
+        function enviarPedido(nombreProducto = null, precio = null) {
+            const numeros = ['50588946272', '50585666459'];
+            const indiceAleatorio = Math.floor(Math.random() * numeros.length);
+            const numeroSeleccionado = numeros[indiceAleatorio];
+            
+            let mensaje = "¡Hola El Patio! Me gustaría hacer un pedido para delivery. 🛵🍗";
+            
+            if (nombreProducto && precio) {
+                mensaje = `¡Hola El Patio! Me interesa pedir el *${nombreProducto}* por C$ ${precio}. ¿Me pueden tomar el pedido? 🛵🍗`;
+            }
+            
+            const mensajeCodificado = encodeURIComponent(mensaje);
+            const urlWhatsApp = `https://wa.me/${numeroSeleccionado}?text=${mensajeCodificado}`;
+            window.open(urlWhatsApp, '_blank');
+        }
+    </script>
 </body>
 </html>
