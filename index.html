@@ -49,8 +49,13 @@
         <p class="text-white font-bold tracking-widest uppercase">Cargando Menú...</p>
     </div>
 
+    <!-- BANNER DE ADVERTENCIA (Solo se muestra si falta configurar Firebase) -->
+    <div id="auth-warning" class="hidden w-full max-w-6xl bg-red-600 text-white text-center py-2 px-4 rounded-t-2xl text-xs sm:text-sm font-bold shadow-lg animate-pulse z-40">
+        ⚠️ MODO LOCAL: Para guardar en la nube, ve a Firebase > Firestore Database > Reglas y cambia a "allow read, write: if true;"
+    </div>
+
     <!-- CONTENEDOR PRINCIPAL DEL MENÚ -->
-    <div id="app-container" class="w-full max-w-6xl bg-stone-900 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden relative border border-stone-800 mx-auto flex flex-col opacity-0 transition-opacity duration-1000">
+    <div id="app-container" class="w-full max-w-6xl bg-stone-900 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden relative border border-stone-800 flex flex-col opacity-0 transition-opacity duration-1000">
         <!-- Renderizado dinámico -->
     </div>
 
@@ -143,15 +148,20 @@
 
     <!-- SCRIPT DE FIREBASE Y LÓGICA -->
     <script type="module">
-        // Importar Firebase 
+        // Importar Firebase (SIN AUTENTICACIÓN PARA EVITAR ERRORES)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Configuración inyectada de la plataforma
-        const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : "{}";
-        const firebaseConfig = JSON.parse(firebaseConfigStr);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'el-patio-app';
+        // Tu configuración real de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAmK3HJCHZTPAN46agkSUleZYXSyrzDwVM",
+            authDomain: "el-patio-de-la-abuela.firebaseapp.com",
+            projectId: "el-patio-de-la-abuela",
+            storageBucket: "el-patio-de-la-abuela.firebasestorage.app",
+            messagingSenderId: "641864285704",
+            appId: "1:641864285704:web:17e1a15270cfedbcfb9bbd",
+            measurementId: "G-B4T2W7LESP"
+        };
 
         // DATOS POR DEFECTO PARA NUEVOS USUARIOS
         const defaultData = {
@@ -168,59 +178,44 @@
         };
 
         // Estado Global
-        window.appData = defaultData;     // Lo que se muestra al cliente
-        window.adminTempData = null;      // Lo que se edita en el modal antes de guardar
-        let dbRef = null;
+        window.appData = defaultData;     
+        window.adminTempData = null;      
+        
+        // Inicializar tu Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Referencia a donde se guardará tu menú en la base de datos
+        let dbRef = doc(db, 'menu', 'principal');
 
-        // Iniciar Firebase si la config está disponible
-        if (Object.keys(firebaseConfig).length > 0) {
-            const app = initializeApp(firebaseConfig);
-            const auth = getAuth(app);
-            const db = getFirestore(app);
-
-            const initAuth = async () => {
-                try {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                } catch (e) {
-                    console.error("Error Auth:", e);
-                    quitarPantallaCarga(); // Mostrar default si falla
-                }
-            };
-
-            onAuthStateChanged(auth, (user) => {
-                if (!user) return;
-
-                // Regla Firebase: Referencia al documento público
-                dbRef = doc(db, 'artifacts', appId, 'public', 'data', 'menuData', 'config');
-
-                // Escucha en tiempo real de la base de datos
-                onSnapshot(dbRef, (snapshot) => {
-                    if (snapshot.exists()) {
-                        window.appData = snapshot.data();
-                    } else {
-                        // Si el documento no existe (primera vez), se crea en la base de datos
-                        window.appData = defaultData;
-                        setDoc(dbRef, defaultData).catch(e=>console.log(e));
-                    }
-                    renderizarMenu();
-                    quitarPantallaCarga();
-                }, (error) => {
-                    console.error("Error leyendo nube:", error);
-                    quitarPantallaCarga();
-                });
-            });
-
-            initAuth();
-        } else {
-            // Fallback si corre fuera del entorno (Local)
-            console.warn("Sin Firebase. Usando datos por defecto.");
+        // Escucha en tiempo real de la base de datos (Directo, sin Auth)
+        onSnapshot(dbRef, (snapshot) => {
+            if (snapshot.exists()) {
+                window.appData = snapshot.data();
+                localStorage.setItem('elPatioLocalFallback', JSON.stringify(window.appData));
+            } else {
+                window.appData = defaultData;
+                setDoc(dbRef, defaultData).catch(e=>console.log("No se pudo crear doc inicial:", e));
+            }
+            
+            // Si la conexión es exitosa, ocultamos advertencias
+            document.getElementById('auth-warning').classList.add('hidden');
+            renderizarMenu();
+            quitarPantallaCarga();
+            
+        }, (error) => {
+            console.error("Error conectando a Firestore:", error);
+            
+            // Si falla (por reglas de seguridad), usar datos locales
+            document.getElementById('auth-warning').classList.remove('hidden');
+            const localData = localStorage.getItem('elPatioLocalFallback');
+            if(localData) {
+                window.appData = JSON.parse(localData);
+            }
+            
             quitarPantallaCarga();
             renderizarMenu();
-        }
+        });
 
         // --- FUNCIONES UI (Globales) ---
         function quitarPantallaCarga() {
@@ -228,6 +223,10 @@
             if(ls) {
                 ls.style.opacity = '0';
                 setTimeout(() => ls.style.display = 'none', 500);
+            }
+            // Agrega un redondeo especial arriba si el banner de error está activo
+            if(!document.getElementById('auth-warning').classList.contains('hidden')){
+                document.getElementById('app-container').classList.replace('rounded-[2rem]', 'rounded-b-[2rem]');
             }
             document.getElementById('app-container').classList.remove('opacity-0');
             document.getElementById('fab-wa').classList.remove('hidden');
@@ -457,21 +456,22 @@
 
         // --- SUBIR DATOS A LA NUBE ---
         window.guardarCambiosEnNube = async function() {
-            if(!dbRef) {
-                alert("Error de conexión. No estás conectado a la nube.");
-                return;
-            }
-
             // Mostrar "Guardando..."
             document.getElementById('saving-overlay').classList.remove('hidden');
 
             try {
                 await setDoc(dbRef, window.adminTempData);
-                // Si es exitoso, Firebase enviará el onSnapshot y se actualizará la pantalla sola
+                // Si es exitoso, Firebase actualizará la pantalla sola
                 cerrarAdmin();
             } catch (error) {
                 console.error("Error al guardar:", error);
-                alert("Hubo un error guardando en la Nube. Revisa tu conexión.");
+                alert("⚠️ No se pudo guardar en la nube.\n\nVerifica en Firebase -> Firestore Database -> Reglas, que tengas puesto:\nallow read, write: if true;\n\nLos cambios se guardarán localmente por ahora.");
+                
+                // Guardado local forzado si falla la nube
+                window.appData = window.adminTempData;
+                localStorage.setItem('elPatioLocalFallback', JSON.stringify(window.appData));
+                renderizarMenu();
+                cerrarAdmin();
             } finally {
                 document.getElementById('saving-overlay').classList.add('hidden');
             }
